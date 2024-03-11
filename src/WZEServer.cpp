@@ -53,13 +53,14 @@ namespace wze
     {
         UDPpacket raw;
 
+        raw.maxlen = PACKET_SIZE;
         raw.data = Packet->Payload.Raw;
 
         if (SDLNet_UDP_Recv(this->Socket, &raw) == 1)
         {
             Packet->Address.IPv4.Raw = raw.address.host;
             Packet->Address.Port = raw.address.port;
-            Packet->Size = raw.len;
+            Packet->Size = raw.len - (PACKET_SIZE - sizeof(Packet->Payload.Serialized.Data));
 
             return true;
         }

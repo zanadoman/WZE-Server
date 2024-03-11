@@ -165,6 +165,10 @@ _ZN3wze6server4SendEPNS_6packetE:
 	.cfi_endproc
 .LFE8161:
 	.size	_ZN3wze6server4SendEPNS_6packetE, .-_ZN3wze6server4SendEPNS_6packetE
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC4:
+	.string	"%d\n"
+	.text
 	.align 2
 	.p2align 4
 	.globl	_ZN3wze6server7ReceiveEPNS_6packetE
@@ -184,22 +188,21 @@ _ZN3wze6server7ReceiveEPNS_6packetE:
 	xorl	%eax, %eax
 	leaq	24(%rsi), %rax
 	movq	%rsp, %rsi
+	movl	$256, 20(%rsp)
 	movq	%rax, 8(%rsp)
 	call	SDLNet_UDP_Recv@PLT
 	cmpl	$1, %eax
 	je	.L23
 	movq	$0, (%rbx)
 	xorl	%eax, %eax
-	xorl	%edx, %edx
-.L20:
-	movb	%al, 16(%rbx)
-	movq	40(%rsp), %rax
-	subq	%fs:40, %rax
+	movb	$0, 16(%rbx)
+.L18:
+	movq	40(%rsp), %rdx
+	subq	%fs:40, %rdx
 	jne	.L24
 	addq	$48, %rsp
 	.cfi_remember_state
 	.cfi_def_cfa_offset 16
-	movl	%edx, %eax
 	popq	%rbx
 	.cfi_def_cfa_offset 8
 	ret
@@ -208,13 +211,18 @@ _ZN3wze6server7ReceiveEPNS_6packetE:
 .L23:
 	.cfi_restore_state
 	movzwl	32(%rsp), %eax
+	movl	16(%rsp), %esi
+	leaq	.LC4(%rip), %rdi
 	movd	28(%rsp), %xmm0
-	movl	$1, %edx
 	movd	%eax, %xmm1
-	movzbl	16(%rsp), %eax
+	leal	-16(%rsi), %eax
+	movb	%al, 16(%rbx)
 	punpckldq	%xmm1, %xmm0
+	xorl	%eax, %eax
 	movq	%xmm0, (%rbx)
-	jmp	.L20
+	call	printf@PLT
+	movl	$1, %eax
+	jmp	.L18
 .L24:
 	call	__stack_chk_fail@PLT
 	.cfi_endproc
