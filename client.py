@@ -11,7 +11,7 @@ def main():
             msg = input(SERVER + ':' + str(PORT) + '> ')
         except KeyboardInterrupt:
             exit()
-        sock.sendto(bytes(msg, 'utf-8'), (SERVER, PORT))
+        sock.sendto(bytes('\0\0\0\0\0\0\0\0' + '\0\0\0\0\0\0\0\0' + msg, 'utf-8'), (SERVER, PORT))
 
 if __name__ == '__main__':
     main()
