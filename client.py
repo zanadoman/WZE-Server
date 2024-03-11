@@ -12,13 +12,6 @@ def main():
         except KeyboardInterrupt:
             exit()
         sock.sendto(bytes(msg, 'utf-8'), (SERVER, PORT))
-        try:
-            if sock.recv(1) == b'\x00':
-                print('arrived')
-            else:
-                print('lost')
-        except TimeoutError:
-            print('timeout')
 
 if __name__ == '__main__':
     main()
