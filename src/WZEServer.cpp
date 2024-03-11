@@ -16,6 +16,11 @@ namespace wze
             printf("wze::server.server(): SDLNet_UDP_Open() failed\nParams: Port: %d\n", Port);
             exit(1);
         }
+        if ((this->Packet = SDLNet_AllocPacket(64)) == NULL)
+        {
+            printf("wze::server.server(): SDLNet_AllocPacket() failed\nParams: Port: %d\n", Port);
+            exit(1);
+        }
     }
 
     server::~server()

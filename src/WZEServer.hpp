@@ -19,5 +19,6 @@ namespace wze
 
         private:
             UDPsocket Socket;
+            UDPpacket* Packet;
     };
 }
