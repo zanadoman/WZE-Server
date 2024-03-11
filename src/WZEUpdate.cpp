@@ -14,8 +14,11 @@ namespace wze
 {
     uint8 server::Update()
     {
+        UDPpacket tmp;
+        uint8 data[this->PacketSize];
         uint8 reply;
 
+        tmp.data = data;
         reply = 0;
 
         while (SDLNet_UDP_Recv(this->Socket, this->Packet))
@@ -26,7 +29,7 @@ namespace wze
                 putchar(this->Packet->data[i]);
             }
             putchar('\n');
-
+    
             this->Send(this->Packet->address.host, this->Packet->address.port, &reply, sizeof(reply));
         }
 
