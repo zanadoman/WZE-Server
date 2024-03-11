@@ -7,7 +7,7 @@ sint32 main()
 {
     server* Server;
 
-    Server = new server();
+    Server = new server(25565);
 
     delete Server;
 

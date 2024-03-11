@@ -14,9 +14,10 @@ namespace wze
     class server
     {
         public:
-            server();
+            server(neo::uint16 Port);
             ~server();
 
         private:
+            UDPsocket Socket;
     };
 }
