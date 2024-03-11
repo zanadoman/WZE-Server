@@ -38,7 +38,7 @@ namespace wze
         raw.address.host = Packet->Address.IPv4.Raw;
         raw.address.port = Packet->Address.Port;
         raw.data = Packet->Payload.Raw;
-        raw.len = Packet->Size;
+        raw.len = Packet->Size + (PACKET_SIZE - sizeof(Packet->Payload.Serialized.Data));
 
         if (SDLNet_UDP_Send(this->Socket, -1, &raw) != 1)
         {

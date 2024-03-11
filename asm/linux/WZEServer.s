@@ -138,6 +138,7 @@ _ZN3wze6server4SendEPNS_6packetE:
 	movq	%rax, 8(%rsp)
 	movzbl	16(%rsi), %eax
 	movl	$-1, %esi
+	addl	$16, %eax
 	movl	%eax, 16(%rsp)
 	call	SDLNet_UDP_Send@PLT
 	cmpl	$1, %eax
