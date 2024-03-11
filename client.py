@@ -8,6 +8,10 @@ def main():
     while True:
         try:
             sock.sendto(bytes(input(SERVER + ':' + str(PORT) + '> '), 'utf-8'), (SERVER, PORT))
+            if sock.recv(1) == b'\x00':
+                print('arrived')
+            else:
+                print('lost')
         except:
             exit()
 

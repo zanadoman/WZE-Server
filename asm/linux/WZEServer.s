@@ -143,6 +143,41 @@ _ZN3wze6serverD2Ev:
 	.size	_ZN3wze6serverD2Ev, .-_ZN3wze6serverD2Ev
 	.globl	_ZN3wze6serverD1Ev
 	.set	_ZN3wze6serverD1Ev,_ZN3wze6serverD2Ev
+	.align 2
+	.p2align 4
+	.globl	_ZN3wze6server4SendEjtPKhh
+	.type	_ZN3wze6server4SendEjtPKhh, @function
+_ZN3wze6server4SendEjtPKhh:
+.LFB8161:
+	.cfi_startproc
+	subq	$56, %rsp
+	.cfi_def_cfa_offset 64
+	movq	8(%rdi), %rdi
+	movzbl	%r8b, %r8d
+	movq	%fs:40, %rax
+	movq	%rax, 40(%rsp)
+	xorl	%eax, %eax
+	movl	%esi, 28(%rsp)
+	movl	$-1, %esi
+	movw	%dx, 32(%rsp)
+	movq	%rsp, %rdx
+	movq	%rcx, 8(%rsp)
+	movl	%r8d, 16(%rsp)
+	call	SDLNet_UDP_Send@PLT
+	movq	40(%rsp), %rax
+	subq	%fs:40, %rax
+	jne	.L17
+	xorl	%eax, %eax
+	addq	$56, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 8
+	ret
+.L17:
+	.cfi_restore_state
+	call	__stack_chk_fail@PLT
+	.cfi_endproc
+.LFE8161:
+	.size	_ZN3wze6server4SendEjtPKhh, .-_ZN3wze6server4SendEjtPKhh
 	.hidden	DW.ref.__gxx_personality_v0
 	.weak	DW.ref.__gxx_personality_v0
 	.section	.data.rel.local.DW.ref.__gxx_personality_v0,"awG",@progbits,DW.ref.__gxx_personality_v0,comdat

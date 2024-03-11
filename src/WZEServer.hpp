@@ -17,6 +17,7 @@ namespace wze
             server(neo::uint16 Port, neo::uint8 PacketSize);
             ~server();
             neo::uint8 Update();
+            neo::uint8 Send(neo::uint32 IP, neo::uint16 Port, const neo::uint8* Data, neo::uint8 Size);
 
         private:
             neo::uint16 Port;

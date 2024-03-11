@@ -22,6 +22,12 @@ _ZN3wze6server6UpdateEv:
 	pushq	%rbx
 	.cfi_def_cfa_offset 32
 	.cfi_offset 3, -32
+	subq	$16, %rsp
+	.cfi_def_cfa_offset 48
+	movq	%fs:40, %rax
+	movq	%rax, 8(%rsp)
+	xorl	%eax, %eax
+	movb	$0, 7(%rsp)
 	.p2align 4,,10
 	.p2align 3
 .L2:
@@ -29,7 +35,7 @@ _ZN3wze6server6UpdateEv:
 	movq	8(%rbp), %rdi
 	call	SDLNet_UDP_Recv@PLT
 	testl	%eax, %eax
-	je	.L9
+	je	.L10
 	movq	16(%rbp), %rax
 	movq	%r12, %rdi
 	movzbl	29(%rax), %edx
@@ -61,10 +67,24 @@ _ZN3wze6server6UpdateEv:
 	movq	stdout(%rip), %rsi
 	movl	$10, %edi
 	call	putc@PLT
+	movq	16(%rbp), %rax
+	leaq	7(%rsp), %rcx
+	movq	%rbp, %rdi
+	movl	$1, %r8d
+	movzwl	32(%rax), %edx
+	movl	28(%rax), %esi
+	call	_ZN3wze6server4SendEjtPKhh@PLT
 	jmp	.L2
 	.p2align 4,,10
 	.p2align 3
-.L9:
+.L10:
+	movq	8(%rsp), %rax
+	subq	%fs:40, %rax
+	jne	.L11
+	addq	$16, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 32
+	xorl	%eax, %eax
 	popq	%rbx
 	.cfi_def_cfa_offset 24
 	popq	%rbp
@@ -72,6 +92,9 @@ _ZN3wze6server6UpdateEv:
 	popq	%r12
 	.cfi_def_cfa_offset 8
 	ret
+.L11:
+	.cfi_restore_state
+	call	__stack_chk_fail@PLT
 	.cfi_endproc
 .LFE8155:
 	.size	_ZN3wze6server6UpdateEv, .-_ZN3wze6server6UpdateEv

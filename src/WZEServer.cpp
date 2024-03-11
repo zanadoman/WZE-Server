@@ -39,4 +39,18 @@ namespace wze
         SDLNet_Quit();
         SDL_Quit();
     }
+
+    uint8 server::Send(uint32 IP, uint16 Port, const uint8* Data, uint8 Size)
+    {
+        UDPpacket packet;
+
+        packet.address.host = IP;
+        packet.address.port = Port;
+        packet.data = (uint8*)Data;
+        packet.len = Size;
+
+        SDLNet_UDP_Send(this->Socket, -1, &packet);
+
+        return 0;
+    }
 }

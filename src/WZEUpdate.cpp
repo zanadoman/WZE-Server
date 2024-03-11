@@ -14,6 +14,10 @@ namespace wze
 {
     uint8 server::Update()
     {
+        uint8 reply;
+
+        reply = 0;
+
         while (SDLNet_UDP_Recv(this->Socket, this->Packet))
         {
             printf("FROM: %d.%d.%d.%d:%d GOT: ", ((ip*)&this->Packet->address.host)->a, ((ip*)&this->Packet->address.host)->b, ((ip*)&this->Packet->address.host)->c, ((ip*)&this->Packet->address.host)->d, this->Packet->address.port);
@@ -22,6 +26,8 @@ namespace wze
                 putchar(this->Packet->data[i]);
             }
             putchar('\n');
+
+            this->Send(this->Packet->address.host, this->Packet->address.port, &reply, sizeof(reply));
         }
 
         return 0;
