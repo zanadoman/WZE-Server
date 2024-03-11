@@ -41,35 +41,74 @@ main:
 .LEHE1:
 	.p2align 4,,10
 	.p2align 3
-.L4:
+.L8:
 	movq	%r12, %rsi
 	movq	%rbp, %rdi
 .LEHB2:
 	call	_ZN3wze6server7ReceiveEPNS_6packetE@PLT
 	testb	%al, %al
-	je	.L4
+	je	.L8
+	movzbl	16(%rsp), %eax
+	cmpb	$4, %al
+	je	.L3
 	xorl	%ebx, %ebx
-	cmpb	$0, 16(%rsp)
+	testb	%al, %al
 	je	.L5
 	.p2align 4,,10
 	.p2align 3
-.L3:
+.L21:
 	movq	8(%rsp), %rax
-	movq	stdout(%rip), %rsi
+.L6:
 	movsbl	(%rax,%rbx), %edi
+	movq	stdout(%rip), %rsi
 	addq	$1, %rbx
 	call	putc@PLT
 	cmpb	16(%rsp), %bl
-	jb	.L3
+	jb	.L21
 .L5:
 	movq	stdout(%rip), %rsi
 	movl	$10, %edi
 	call	putc@PLT
 .LEHE2:
-	jmp	.L4
-.L10:
+	jmp	.L8
+	.p2align 4,,10
+	.p2align 3
+.L3:
+	movq	8(%rsp), %rax
+	xorl	%ebx, %ebx
+	cmpb	$115, (%rax)
+	jne	.L6
+	cmpb	$116, 1(%rax)
+	jne	.L6
+	cmpb	$111, 2(%rax)
+	jne	.L6
+	cmpb	$112, 3(%rax)
+	jne	.L6
+	movq	%rbp, %rdi
+	call	_ZN3wze6serverD1Ev@PLT
+	movl	$8, %esi
+	movq	%rbp, %rdi
+	call	_ZdlPvm@PLT
+	movq	280(%rsp), %rax
+	subq	%fs:40, %rax
+	jne	.L23
+	addq	$288, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 32
+	xorl	%eax, %eax
+	popq	%rbx
+	.cfi_def_cfa_offset 24
+	popq	%rbp
+	.cfi_def_cfa_offset 16
+	popq	%r12
+	.cfi_def_cfa_offset 8
+	ret
+.L23:
+	.cfi_restore_state
+	call	__stack_chk_fail@PLT
+.L17:
 	movq	%rax, %rbx
-	jmp	.L6
+	jmp	.L9
 	.globl	__gxx_personality_v0
 	.section	.gcc_except_table,"a",@progbits
 .LLSDA8155:
@@ -84,7 +123,7 @@ main:
 	.uleb128 0
 	.uleb128 .LEHB1-.LFB8155
 	.uleb128 .LEHE1-.LEHB1
-	.uleb128 .L10-.LFB8155
+	.uleb128 .L17-.LFB8155
 	.uleb128 0
 	.uleb128 .LEHB2-.LFB8155
 	.uleb128 .LEHE2-.LEHB2
@@ -100,7 +139,7 @@ main:
 	.type	main.cold, @function
 main.cold:
 .LFSB8155:
-.L6:
+.L9:
 	.cfi_def_cfa_offset 320
 	.cfi_offset 3, -32
 	.cfi_offset 6, -24
@@ -110,12 +149,12 @@ main.cold:
 	call	_ZdlPvm@PLT
 	movq	280(%rsp), %rax
 	subq	%fs:40, %rax
-	jne	.L17
+	jne	.L24
 	movq	%rbx, %rdi
 .LEHB3:
 	call	_Unwind_Resume@PLT
 .LEHE3:
-.L17:
+.L24:
 	call	__stack_chk_fail@PLT
 	.cfi_endproc
 .LFE8155:
