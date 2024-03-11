@@ -19,18 +19,19 @@ main:
 	.seh_stackalloc	40
 	.seh_endprologue
 	call	__main
-	movl	$1, %ecx
+	movl	$16, %ecx
 .LEHB0:
 	call	_Znwy
 .LEHE0:
+	movl	$25565, %edx
 	movq	%rax, %rcx
 	movq	%rax, %rbx
 .LEHB1:
-	call	_ZN3wze6serverC1Ev
+	call	_ZN3wze6serverC1Et
 .LEHE1:
 	movq	%rbx, %rcx
 	call	_ZN3wze6serverD1Ev
-	movl	$1, %edx
+	movl	$16, %edx
 	movq	%rbx, %rcx
 	call	_ZdlPvy
 	xorl	%eax, %eax
@@ -71,7 +72,7 @@ main:
 main.cold:
 .L2:
 	movq	%rbx, %rcx
-	movl	$1, %edx
+	movl	$16, %edx
 	call	_ZdlPvy
 	movq	%rsi, %rcx
 .LEHB2:
@@ -100,7 +101,7 @@ main.cold:
 .LHOTE0:
 	.ident	"GCC: (GNU) 13.1.0"
 	.def	_Znwy;	.scl	2;	.type	32;	.endef
-	.def	_ZN3wze6serverC1Ev;	.scl	2;	.type	32;	.endef
+	.def	_ZN3wze6serverC1Et;	.scl	2;	.type	32;	.endef
 	.def	_ZN3wze6serverD1Ev;	.scl	2;	.type	32;	.endef
 	.def	_ZdlPvy;	.scl	2;	.type	32;	.endef
 	.def	_Unwind_Resume;	.scl	2;	.type	32;	.endef
