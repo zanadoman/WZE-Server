@@ -17,7 +17,7 @@ def main():
                 print('arrived')
             else:
                 print('lost')
-        except socket.timeout:
+        except TimeoutError:
             print('timeout')
 
 if __name__ == '__main__':
