@@ -5,7 +5,6 @@ PORT = 49152
 
 def main():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.settimeout(1)
     while True:
         try:
             msg = input(SERVER + ':' + str(PORT) + '> ')
