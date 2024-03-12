@@ -40,31 +40,23 @@ main:
 .LEHB1:
 	call	_ZN3wze6serverC1Et@PLT
 .LEHE1:
-.L3:
+.L8:
 	movq	%rbp, %rdi
-	xorl	%r12d, %r12d
 .LEHB2:
 	call	_ZN3wze6server7ReceiveEv@PLT
-	movq	0(%rbp), %rcx
-	testq	%rcx, %rcx
-	je	.L9
-	.p2align 4,,10
-	.p2align 3
-.L2:
+	cmpq	$0, 0(%rbp)
+	je	.L2
 	movq	8(%rbp), %rax
-	leaq	0(,%r12,8), %r13
-	movq	(%rax,%r12,8), %rax
-	movzbl	16(%rax), %edx
-	cmpb	$4, %dl
-	je	.L19
-.L4:
-	cmpq	%rcx, %r12
-	jnb	.L6
-	xorl	%ebx, %ebx
-	jmp	.L7
+	xorl	%r12d, %r12d
 	.p2align 4,,10
 	.p2align 3
-.L8:
+.L3:
+	leaq	0(,%r12,8), %r13
+	xorl	%ebx, %ebx
+	jmp	.L4
+	.p2align 4,,10
+	.p2align 3
+.L5:
 	movq	8(%rax), %rax
 	movzbl	%bl, %edx
 	addl	$1, %ebx
@@ -72,35 +64,41 @@ main:
 	call	putc@PLT
 	movq	8(%rbp), %rax
 	cmpq	0(%rbp), %r12
-	jnb	.L6
+	jnb	.L16
+.L4:
 	movq	(%rax,%r13), %rax
-	movzbl	16(%rax), %edx
-.L7:
 	movq	stdout(%rip), %rsi
-	cmpb	%dl, %bl
-	jb	.L8
+	cmpb	16(%rax), %bl
+	jb	.L5
 	movl	$10, %edi
-	addq	$1, %r12
 	call	putc@PLT
-	movq	0(%rbp), %rcx
-	cmpq	%rcx, %r12
-	jb	.L2
-.L9:
+	movq	0(%rbp), %rdx
+	movq	8(%rbp), %rax
+	cmpq	%rdx, %r12
+	jnb	.L16
+	movq	(%rax,%r13), %rcx
+	cmpb	$4, 16(%rcx)
+	je	.L18
+.L7:
+	addq	$1, %r12
+	cmpq	%rdx, %r12
+	jb	.L3
+.L2:
 	movl	$5000, %edi
 	call	SDL_Delay@PLT
-	jmp	.L3
+	jmp	.L8
 	.p2align 4,,10
 	.p2align 3
-.L19:
-	movq	8(%rax), %rsi
-	cmpb	$115, (%rsi)
-	jne	.L4
-	cmpb	$116, 1(%rsi)
-	jne	.L4
-	cmpb	$111, 2(%rsi)
-	jne	.L4
-	cmpb	$112, 3(%rsi)
-	jne	.L4
+.L18:
+	movq	8(%rcx), %rcx
+	cmpb	$115, (%rcx)
+	jne	.L7
+	cmpb	$116, 1(%rcx)
+	jne	.L7
+	cmpb	$111, 2(%rcx)
+	jne	.L7
+	cmpb	$112, 3(%rcx)
+	jne	.L7
 	movq	%rbp, %rdi
 	call	_ZN3wze6serverD1Ev@PLT
 	movq	%rbp, %rdi
@@ -119,7 +117,7 @@ main:
 	popq	%r13
 	.cfi_def_cfa_offset 8
 	ret
-.L6:
+.L16:
 	.cfi_restore_state
 	leaq	.LC0(%rip), %rdi
 	movq	%r12, %rsi
@@ -128,9 +126,9 @@ main:
 .LEHE2:
 	movl	$1, %edi
 	call	exit@PLT
-.L12:
+.L10:
 	movq	%rax, %rbx
-	jmp	.L10
+	jmp	.L9
 	.globl	__gxx_personality_v0
 	.section	.gcc_except_table,"a",@progbits
 .LLSDA8155:
@@ -145,7 +143,7 @@ main:
 	.uleb128 0
 	.uleb128 .LEHB1-.LFB8155
 	.uleb128 .LEHE1-.LEHB1
-	.uleb128 .L12-.LFB8155
+	.uleb128 .L10-.LFB8155
 	.uleb128 0
 	.uleb128 .LEHB2-.LFB8155
 	.uleb128 .LEHE2-.LEHB2
@@ -161,7 +159,7 @@ main:
 	.type	main.cold, @function
 main.cold:
 .LFSB8155:
-.L10:
+.L9:
 	.cfi_def_cfa_offset 48
 	.cfi_offset 3, -40
 	.cfi_offset 6, -32
