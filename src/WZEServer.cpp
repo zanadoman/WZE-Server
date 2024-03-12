@@ -36,14 +36,27 @@ namespace wze
         SDL_Quit();
     }
 
-    uint8 server::Send(packet* Packet)
+    uint8 server::Send(address Address, uint64 ID, uint8 Size, const void* Data)
     {
+        packet Packet;
         UDPpacket raw;
+
+        if (sizeof(Packet.Payload.Serialized.Data) < Size)
+        {
+            printf("wze::server.Send(): Size must not be greater than%ld\nParams: Address: %d.%d.%d.%d:%d, ID: %lld, Size: %d, Data: %p\n", sizeof(Packet.Payload.Serialized.Data), Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.Port, ID, Size, Data); 
+            exit(1);
+        }
+
+        Packet.Address = Address;
+        Packet.Size = Size;
+        Packet.Payload.Serialized.Tick = SDL_GetTicks64();
+        Packet.Payload.Serialized.ID = ID;
+        memory::CopyTo(Data, Packet.Payload.Serialized.Data, Size);
         
-        raw.address.host = Packet->Address.IPv4.Raw;
-        raw.address.port = Packet->Address.Port;
-        raw.data = Packet->Payload.Raw;
-        raw.len = Packet->Size + (PACKET_SIZE - sizeof(Packet->Payload.Serialized.Data));
+        raw.address.host = Packet.Address.IPv4.Raw;
+        raw.address.port = Packet.Address.Port;
+        raw.len = Packet.Size;
+        raw.data = Packet.Payload.Raw;
 
         if (SDLNet_UDP_Send(this->Socket, -1, &raw) != 1)
         {
@@ -74,7 +87,7 @@ namespace wze
                 this->IncomingPackets.Insert(this->IncomingPackets.Length(), 10);
             }
 
-            if ((this->IncomingPackets[i] = new packet()) == NULL)
+            if ((this->IncomingPackets[i] = new packet) == NULL)
             {
                 printf("wze::server.receive(): Memory allocation failed\n");
                 exit(1);
@@ -99,5 +112,28 @@ namespace wze
         }
         
         return 0;
+    }
+
+    address server::ResolveHost(const char* Host, uint16 Port)
+    {
+        address result;
+
+        IPaddress address;
+
+        if (Host == NULL)
+        {
+            printf("wze::server::ResolveHost(): Host must not be NULL\nParams: Host: %p, Port: %d\n", Host, Port);
+            exit(1);
+        }
+
+        address.host = 0;
+        address.port = 0;
+
+        SDLNet_ResolveHost(&address, Host, Port);
+
+        result.IPv4.Raw = address.host;
+        result.Port = address.port;
+
+        return result;
     }
 }

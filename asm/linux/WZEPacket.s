@@ -7,10 +7,6 @@
 _ZN3wze6packetC2Ev:
 .LFB8156:
 	.cfi_startproc
-	leaq	40(%rdi), %rax
-	movq	$0, (%rdi)
-	movq	%rax, 8(%rdi)
-	movb	$0, 16(%rdi)
 	ret
 	.cfi_endproc
 .LFE8156:
@@ -29,47 +25,44 @@ _ZN3wze6packetC2Ev:
 _ZN3wze6packetC2ENS_7addressEyPKvh:
 .LFB8159:
 	.cfi_startproc
-	pushq	%r14
-	.cfi_def_cfa_offset 16
-	.cfi_offset 14, -16
-	movq	%rdx, %r14
 	pushq	%r13
-	.cfi_def_cfa_offset 24
-	.cfi_offset 13, -24
+	.cfi_def_cfa_offset 16
+	.cfi_offset 13, -16
+	movq	%rdx, %r13
 	pushq	%r12
-	.cfi_def_cfa_offset 32
-	.cfi_offset 12, -32
+	.cfi_def_cfa_offset 24
+	.cfi_offset 12, -24
 	movq	%rcx, %r12
 	pushq	%rbp
-	.cfi_def_cfa_offset 40
-	.cfi_offset 6, -40
+	.cfi_def_cfa_offset 32
+	.cfi_offset 6, -32
 	movl	%r8d, %ebp
 	pushq	%rbx
+	.cfi_def_cfa_offset 40
+	.cfi_offset 3, -40
+	subq	$8, %rsp
 	.cfi_def_cfa_offset 48
-	.cfi_offset 3, -48
 	cmpb	$-16, %r8b
 	ja	.L6
-	leaq	40(%rdi), %r13
 	movq	%rsi, (%rdi)
 	movq	%rdi, %rbx
-	movq	%r13, 8(%rdi)
-	movb	%r8b, 16(%rdi)
+	movb	%r8b, 8(%rdi)
 	call	SDL_GetTicks64@PLT
-	movq	%r14, 32(%rbx)
+	movq	%r13, 24(%rbx)
 	movzbl	%bpl, %edx
-	movq	%r13, %rsi
-	movq	%rax, 24(%rbx)
 	movq	%r12, %rdi
-	popq	%rbx
+	movq	%rax, 16(%rbx)
+	addq	$8, %rsp
 	.cfi_remember_state
 	.cfi_def_cfa_offset 40
-	popq	%rbp
+	leaq	32(%rbx), %rsi
+	popq	%rbx
 	.cfi_def_cfa_offset 32
-	popq	%r12
+	popq	%rbp
 	.cfi_def_cfa_offset 24
-	popq	%r13
+	popq	%r12
 	.cfi_def_cfa_offset 16
-	popq	%r14
+	popq	%r13
 	.cfi_def_cfa_offset 8
 	jmp	_ZN3neo6memory6CopyToEPKvPvy@PLT
 .L6:
@@ -88,7 +81,7 @@ _ZN3wze6packetC2ENS_7addressEyPKvh:
 	.cfi_def_cfa_offset 64
 	movzbl	%sil, %edx
 	shrl	$24, %r9d
-	pushq	%r14
+	pushq	%r13
 	.cfi_def_cfa_offset 72
 	leaq	.LC0(%rip), %rdi
 	movzbl	%r8b, %r8d
@@ -106,5 +99,41 @@ _ZN3wze6packetC2ENS_7addressEyPKvh:
 	.size	_ZN3wze6packetC2ENS_7addressEyPKvh, .-_ZN3wze6packetC2ENS_7addressEyPKvh
 	.globl	_ZN3wze6packetC1ENS_7addressEyPKvh
 	.set	_ZN3wze6packetC1ENS_7addressEyPKvh,_ZN3wze6packetC2ENS_7addressEyPKvh
+	.align 2
+	.p2align 4
+	.globl	_ZN3wze6packet10GetAddressEv
+	.type	_ZN3wze6packet10GetAddressEv, @function
+_ZN3wze6packet10GetAddressEv:
+.LFB8161:
+	.cfi_startproc
+	movq	(%rdi), %rax
+	ret
+	.cfi_endproc
+.LFE8161:
+	.size	_ZN3wze6packet10GetAddressEv, .-_ZN3wze6packet10GetAddressEv
+	.align 2
+	.p2align 4
+	.globl	_ZN3wze6packet7GetSizeEv
+	.type	_ZN3wze6packet7GetSizeEv, @function
+_ZN3wze6packet7GetSizeEv:
+.LFB8162:
+	.cfi_startproc
+	movzbl	8(%rdi), %eax
+	ret
+	.cfi_endproc
+.LFE8162:
+	.size	_ZN3wze6packet7GetSizeEv, .-_ZN3wze6packet7GetSizeEv
+	.align 2
+	.p2align 4
+	.globl	_ZN3wze6packet7GetDataEv
+	.type	_ZN3wze6packet7GetDataEv, @function
+_ZN3wze6packet7GetDataEv:
+.LFB8163:
+	.cfi_startproc
+	leaq	32(%rdi), %rax
+	ret
+	.cfi_endproc
+.LFE8163:
+	.size	_ZN3wze6packet7GetDataEv, .-_ZN3wze6packet7GetDataEv
 	.ident	"GCC: (GNU) 13.2.1 20230801"
 	.section	.note.GNU-stack,"",@progbits

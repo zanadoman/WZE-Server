@@ -26,44 +26,48 @@ namespace wze
             } Serialized;
             neo::uint32 Raw;
         } IPv4;
-        neo::uint32 Port;
-    };
-
-    class packet
-    {
-        friend class server;
-
-        public:
-            address Address;
-            const void* Data;
-            neo::uint8 Size;
-            packet();
-            packet(address Address, neo::uint64 ID, const void* Data, neo::uint8 Size);
-
-        private:
-            union
-            {
-                struct
-                {
-                    neo::uint64 Tick;
-                    neo::uint64 ID;
-                    neo::uint8 Data[PACKET_SIZE - (sizeof(Tick) + sizeof(ID))];
-                } Serialized;
-                neo::uint8 Raw[PACKET_SIZE];
-            } Payload;
+        neo::uint16 Port;
     };
 
     class server
     {
+        class packet
+        {
+            friend class server;
+
+            public:
+                address GetAddress();
+                neo::uint8 GetSize();
+                const void* GetData();
+
+            private:
+                address Address;
+                neo::uint8 Size;
+                union
+                {
+                    struct
+                    {
+                        neo::uint64 Tick;
+                        neo::uint64 ID;
+                        neo::uint8 Data[PACKET_SIZE - (sizeof(Tick) + sizeof(ID))];
+                    } Serialized;
+                    neo::uint8 Raw[PACKET_SIZE];
+                } Payload;
+        };
+
         public:
             server(neo::uint16 Port);
             ~server();
-            neo::uint8 Send(packet* Packet);
+            neo::uint8 Send(address Address, neo::uint64 ID, neo::uint8 Size, const void* Data);
             neo::uint8 Receive();
+            static address ResolveHost(const char* Host, neo::uint16 Port);
 
             neo::array<packet*> IncomingPackets;
+            neo::array<packet*> OutgoingPackets;
 
         private:
             UDPsocket Socket;
+            neo::uint8 OrderIncomingPackages();
+            neo::uint8 OrderIncomingPackagesMerge();
     };
 }
