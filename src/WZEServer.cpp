@@ -49,26 +49,50 @@ namespace wze
         return 0;
     }
 
-    bool server::Receive(packet* Packet)
+    uint8 server::Receive()
     {
         UDPpacket raw;
+        uint64 i;
 
-        raw.maxlen = PACKET_SIZE;
-        raw.data = Packet->Payload.Raw;
-
-        if (SDLNet_UDP_Recv(this->Socket, &raw) == 1)
+        for (uint64 i = 0; i < this->IncomingPackets.Length(); i++)
         {
-            Packet->Address.IPv4.Raw = raw.address.host;
-            Packet->Address.Port = raw.address.port;
-            Packet->Size = raw.len - (PACKET_SIZE - sizeof(Packet->Payload.Serialized.Data));
-
-            return true;
+            delete this->IncomingPackets[i];
         }
 
-        Packet->Address.IPv4.Raw = 0;
-        Packet->Address.Port = 0;
-        Packet->Size = 0;
+        raw.maxlen = PACKET_SIZE;
+        i = 0;
+
+        while (true)
+        {
+            if (i == this->IncomingPackets.Length())
+            {
+                this->IncomingPackets.Insert(this->IncomingPackets.Length(), 10);
+            }
+
+            if ((this->IncomingPackets[i] = new packet()) == NULL)
+            {
+                printf("wze::server.receive(): Memory allocation failed\n");
+                exit(1);
+            }
+
+            raw.data = this->IncomingPackets[i]->Payload.Raw;
+            if (SDLNet_UDP_Recv(this->Socket, &raw) != 1)
+            {
+                delete this->IncomingPackets[i];
+                break;
+            }
+
+            this->IncomingPackets[i]->Address.IPv4.Raw = raw.address.host;
+            this->IncomingPackets[i]->Address.Port = raw.address.port;
+            this->IncomingPackets[i]->Size = raw.len - (PACKET_SIZE - sizeof(this->IncomingPackets[this->IncomingPackets.Length() - 1]->Payload.Serialized.Data));
         
-        return false;
+            i++;
+        }
+        if (i < this->IncomingPackets.Length())
+        {
+            this->IncomingPackets.Remove(i, this->IncomingPackets.Length() - i);
+        }
+        
+        return 0;
     }
 }

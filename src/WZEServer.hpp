@@ -59,7 +59,9 @@ namespace wze
             server(neo::uint16 Port);
             ~server();
             neo::uint8 Send(packet* Packet);
-            bool Receive(packet* Packet);
+            neo::uint8 Receive();
+
+            neo::array<packet*> IncomingPackets;
 
         private:
             UDPsocket Socket;
