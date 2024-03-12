@@ -47,7 +47,7 @@ main:
 	call	_ZN3wze6server7ReceiveEv@PLT
 	movq	0(%rbp), %rcx
 	testq	%rcx, %rcx
-	je	.L3
+	je	.L9
 	.p2align 4,,10
 	.p2align 3
 .L2:
@@ -85,6 +85,9 @@ main:
 	movq	0(%rbp), %rcx
 	cmpq	%rcx, %r12
 	jb	.L2
+.L9:
+	movl	$5000, %edi
+	call	SDL_Delay@PLT
 	jmp	.L3
 	.p2align 4,,10
 	.p2align 3

@@ -26,6 +26,11 @@ namespace wze
 
     server::~server()
     {
+        for (uint64 i = 0; i < this->IncomingPackets.Length(); i++)
+        {
+            delete this->IncomingPackets[i];
+        }
+
         SDLNet_UDP_Close(this->Socket);
         SDLNet_Quit();
         SDL_Quit();
