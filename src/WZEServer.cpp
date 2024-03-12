@@ -60,7 +60,7 @@ namespace wze
 
         if (SDLNet_UDP_Send(this->Socket, -1, &raw) != 1)
         {
-            printf("wze::server.Send(): SDLNet_UDP_Send() failed\nParams: Packet: %p\n", Packet);
+            printf("wze::server.Send(): SDLNet_UDP_Send() failed\nParams: Address: %d.%d.%d.%d:%d, ID: %lld, Size: %d, Data: %p\n", Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.Port, ID, Size, Data); 
             exit(1);
         }
 
@@ -127,12 +127,11 @@ namespace wze
         }
 
         address.host = 0;
-        address.port = 0;
 
-        SDLNet_ResolveHost(&address, Host, Port);
+        SDLNet_ResolveHost(&address, Host, 0);
 
         result.IPv4.Raw = address.host;
-        result.Port = address.port;
+        result.Port = Port;
 
         return result;
     }

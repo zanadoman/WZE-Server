@@ -8,16 +8,11 @@ using namespace wze;
 sint32 main()
 {
     server* Server;
-    address Address;
-    uint64 i;
 
     Server = new server(PORT);
-    i = 0;
 
     while (true)
     {
-        printf("Loop: %lld.\n", i++);
-
         Server->Receive();
 
         for (uint64 i = 0; i < Server->IncomingPackets.Length(); i++)
@@ -37,13 +32,7 @@ sint32 main()
 
                 return 0;
             }
-
-            Address = Server->IncomingPackets[i]->GetAddress();
-            packet Packet(Address, 0, "online", sizeof("online") - sizeof(char));
-            Server->Send(&Packet);
         }
-
-        printf("Done\n");
 
         SDL_Delay(3000);
     }
