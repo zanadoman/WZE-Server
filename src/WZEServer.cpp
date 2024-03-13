@@ -26,11 +26,6 @@ namespace wze
 
     server::~server()
     {
-        for (uint64 i = 0; i < this->IncomingPackets.Length(); i++)
-        {
-            delete this->IncomingPackets[i];
-        }
-
         SDLNet_UDP_Close(this->Socket);
         SDLNet_Quit();
         SDL_Quit();
@@ -76,44 +71,42 @@ namespace wze
     uint8 server::Receive()
     {
         UDPpacket raw;
+        packet packet;
         uint64 i;
 
-        for (uint64 i = 0; i < this->IncomingPackets.Length(); i++)
-        {
-            delete this->IncomingPackets[i];
-        }
+        this->IncomingPackets.Clear();
 
         raw.maxlen = PACKET_SIZE;
-        i = 0;
+        raw.data = packet.Payload.Raw;
 
         while (true)
         {
-            if (i == this->IncomingPackets.Length())
-            {
-                this->IncomingPackets.Insert(this->IncomingPackets.Length(), 10);
-            }
-            if ((this->IncomingPackets[i] = new packet) == NULL)
-            {
-                printf("wze::server.receive(): Memory allocation failed\n");
-                exit(1);
-            }
-
-            raw.data = this->IncomingPackets[i]->Payload.Raw;
             if (SDLNet_UDP_Recv(this->Socket, &raw) != 1)
             {
-                delete this->IncomingPackets[i];
                 break;
             }
 
-            this->IncomingPackets[i]->Address.IPv4.Raw = raw.address.host;
-            this->IncomingPackets[i]->Address.Port = raw.address.port;
-            this->IncomingPackets[i]->Size = raw.len - sizeof(payload::serialized::Tick) - sizeof(payload::serialized::ID);
-        
-            i++;
-        }
-        if (i < this->IncomingPackets.Length())
-        {
-            this->IncomingPackets.Remove(i, this->IncomingPackets.Length() - i);
+            packet.Address.IPv4.Raw = raw.address.host;
+            packet.Address.Port = raw.address.port;
+            packet.Size = raw.len - sizeof(payload::serialized::Tick) - sizeof(payload::serialized::ID);
+
+            for (i = 0; i < this->IncomingPackets.Length(); i++)
+            {
+                if (this->IncomingPackets[i] == packet)
+                {
+                    if (this->IncomingPackets[i].Payload.Serialized.Tick < packet.Payload.Serialized.Tick)
+                    {
+                        this->IncomingPackets[i] = packet;
+                    }
+
+                    break;
+                }
+            }
+
+            if (i == this->IncomingPackets.Length())
+            {
+                this->IncomingPackets += {packet};
+            }
         }
         
         return 0;

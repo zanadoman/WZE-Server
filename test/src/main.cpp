@@ -18,9 +18,9 @@ sint32 main()
         for (uint64 i = 0; i < Server->IncomingPackets.Length(); i++)
         {
             printf("Server: ");
-            for (uint8 j = 0; j < Server->IncomingPackets[i]->GetSize(); j++)
+            for (uint8 j = 0; j < Server->IncomingPackets[i].GetSize(); j++)
             {
-                putchar(((char*)Server->IncomingPackets[i]->GetData())[j]);
+                putchar(((char*)Server->IncomingPackets[i].GetData())[j]);
             }
             putchar('\n');
         }

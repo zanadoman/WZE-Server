@@ -58,19 +58,22 @@ main:
 	movq	%r14, %rdi
 	xorl	%eax, %eax
 	call	printf@PLT
-	movq	264(%rbx), %rax
+	movq	264(%rbx), %rdi
 	cmpq	256(%rbx), %r12
 	jnb	.L3
-	leaq	0(,%r12,8), %r13
+	movq	%r12, %r13
 	xorl	%ebp, %ebp
+	salq	$4, %r13
+	addq	%r12, %r13
+	salq	$4, %r13
 	jmp	.L6
 	.p2align 4,,10
 	.p2align 3
 .L7:
-	movq	264(%rbx), %rax
+	movq	264(%rbx), %rdi
 	cmpq	256(%rbx), %r12
 	jnb	.L3
-	movq	(%rax,%r13), %rdi
+	addq	%r13, %rdi
 	call	_ZN3wze6server6packet7GetDataEv@PLT
 	movq	stdout(%rip), %rsi
 	movq	%rax, %rdx
@@ -78,11 +81,11 @@ main:
 	addl	$1, %ebp
 	movsbl	(%rdx,%rax), %edi
 	call	putc@PLT
-	movq	264(%rbx), %rax
+	movq	264(%rbx), %rdi
 	cmpq	256(%rbx), %r12
 	jnb	.L3
 .L6:
-	movq	(%rax,%r13), %rdi
+	addq	%r13, %rdi
 	call	_ZN3wze6server6packet7GetSizeEv@PLT
 	cmpb	%al, %bpl
 	jb	.L7

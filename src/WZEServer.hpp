@@ -47,6 +47,7 @@ namespace wze
             friend class server;
 
             public:
+                bool operator == (packet Packet);
                 address GetAddress();
                 neo::uint8 GetSize();
                 const void* GetData();
@@ -64,7 +65,7 @@ namespace wze
             neo::uint8 Receive();
             static address ResolveHost(const char* Host, neo::uint16 Port);
 
-            neo::array<packet*> IncomingPackets;
+            neo::array<packet> IncomingPackets;
 
         private:
             UDPsocket Socket;
