@@ -1,13 +1,16 @@
 	.file	"main.cpp"
 	.text
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC0:
+	.string	"Server: "
 	.section	.rodata.str1.8,"aMS",@progbits,1
 	.align 8
-.LC0:
+.LC1:
 	.string	"neo::array[]: Index out of range\nParams: Index: %lld\n"
 	.section	.text.unlikely,"ax",@progbits
-.LCOLDB1:
+.LCOLDB2:
 	.section	.text.startup,"ax",@progbits
-.LHOTB1:
+.LHOTB2:
 	.p2align 4
 	.globl	main
 	.type	main, @function
@@ -16,21 +19,22 @@ main:
 	.cfi_startproc
 	.cfi_personality 0x9b,DW.ref.__gxx_personality_v0
 	.cfi_lsda 0x1b,.LLSDA8155
-	pushq	%r13
+	pushq	%r14
 	.cfi_def_cfa_offset 16
-	.cfi_offset 13, -16
-	movl	$24, %edi
-	pushq	%r12
+	.cfi_offset 14, -16
+	movl	$280, %edi
+	pushq	%r13
 	.cfi_def_cfa_offset 24
-	.cfi_offset 12, -24
-	pushq	%rbp
+	.cfi_offset 13, -24
+	pushq	%r12
 	.cfi_def_cfa_offset 32
-	.cfi_offset 6, -32
-	pushq	%rbx
+	.cfi_offset 12, -32
+	pushq	%rbp
 	.cfi_def_cfa_offset 40
-	.cfi_offset 3, -40
-	subq	$8, %rsp
+	.cfi_offset 6, -40
+	pushq	%rbx
 	.cfi_def_cfa_offset 48
+	.cfi_offset 3, -48
 .LEHB0:
 	call	_Znwm@PLT
 .LEHE0:
@@ -40,29 +44,32 @@ main:
 .LEHB1:
 	call	_ZN3wze6serverC1Et@PLT
 .LEHE1:
-.L15:
+	leaq	.LC0(%rip), %r14
+	.p2align 4,,10
+	.p2align 3
+.L9:
 	movq	%rbx, %rdi
-	xorl	%r12d, %r12d
 .LEHB2:
 	call	_ZN3wze6server7ReceiveEv@PLT
-	movq	(%rbx), %rdx
-	testq	%rdx, %rdx
-	je	.L3
-	.p2align 4,,10
-	.p2align 3
-.L2:
-	movq	8(%rbx), %rax
-	cmpq	%rdx, %r12
-	jnb	.L26
+	cmpq	$0, 256(%rbx)
+	je	.L2
+	xorl	%r12d, %r12d
+.L8:
+	movq	%r14, %rdi
+	xorl	%eax, %eax
+	call	printf@PLT
+	movq	264(%rbx), %rax
+	cmpq	256(%rbx), %r12
+	jnb	.L3
 	leaq	0(,%r12,8), %r13
 	xorl	%ebp, %ebp
-	jmp	.L5
+	jmp	.L6
 	.p2align 4,,10
 	.p2align 3
-.L6:
-	movq	8(%rbx), %rax
-	cmpq	(%rbx), %r12
-	jnb	.L26
+.L7:
+	movq	264(%rbx), %rax
+	cmpq	256(%rbx), %r12
+	jnb	.L3
 	movq	(%rax,%r13), %rdi
 	call	_ZN3wze6server6packet7GetDataEv@PLT
 	movq	stdout(%rip), %rsi
@@ -71,96 +78,35 @@ main:
 	addl	$1, %ebp
 	movsbl	(%rdx,%rax), %edi
 	call	putc@PLT
-	movq	8(%rbx), %rax
-	cmpq	(%rbx), %r12
-	jnb	.L26
-.L5:
+	movq	264(%rbx), %rax
+	cmpq	256(%rbx), %r12
+	jnb	.L3
+.L6:
 	movq	(%rax,%r13), %rdi
 	call	_ZN3wze6server6packet7GetSizeEv@PLT
 	cmpb	%al, %bpl
-	jb	.L6
+	jb	.L7
 	movq	stdout(%rip), %rsi
 	movl	$10, %edi
-	call	putc@PLT
-	movq	8(%rbx), %rax
-	cmpq	(%rbx), %r12
-	jnb	.L26
-	movq	(%rax,%r13), %rdi
-	call	_ZN3wze6server6packet7GetSizeEv@PLT
-	cmpb	$4, %al
-	je	.L28
-.L8:
-	movq	(%rbx), %rdx
 	addq	$1, %r12
-	cmpq	%rdx, %r12
-	jb	.L2
-.L3:
+	call	putc@PLT
+	cmpq	256(%rbx), %r12
+	jb	.L8
+.L2:
 	movl	$3000, %edi
 	call	SDL_Delay@PLT
-	jmp	.L15
-	.p2align 4,,10
-	.p2align 3
-.L28:
-	movq	8(%rbx), %rax
-	cmpq	(%rbx), %r12
-	jnb	.L26
-	movq	(%rax,%r13), %rdi
-	call	_ZN3wze6server6packet7GetDataEv@PLT
-	cmpb	$115, (%rax)
-	jne	.L8
-	movq	8(%rbx), %rax
-	cmpq	(%rbx), %r12
-	jnb	.L26
-	movq	(%rax,%r13), %rdi
-	call	_ZN3wze6server6packet7GetDataEv@PLT
-	cmpb	$116, 1(%rax)
-	jne	.L8
-	movq	8(%rbx), %rax
-	cmpq	(%rbx), %r12
-	jnb	.L26
-	movq	(%rax,%r13), %rdi
-	call	_ZN3wze6server6packet7GetDataEv@PLT
-	cmpb	$111, 2(%rax)
-	jne	.L8
-	movq	8(%rbx), %rax
-	cmpq	(%rbx), %r12
-	jnb	.L26
-	movq	(%rax,%r13), %rdi
-	call	_ZN3wze6server6packet7GetDataEv@PLT
-	cmpb	$112, 3(%rax)
-	jne	.L8
-	movq	%rbx, %rdi
-	call	_ZN3wze6serverD1Ev@PLT
-	movq	%rbx, %rdi
-	movl	$24, %esi
-	call	_ZdlPvm@PLT
-	popq	%rdx
-	.cfi_remember_state
-	.cfi_def_cfa_offset 40
-	xorl	%eax, %eax
-	popq	%rbx
-	.cfi_def_cfa_offset 32
-	popq	%rbp
-	.cfi_def_cfa_offset 24
-	popq	%r12
-	.cfi_def_cfa_offset 16
-	popq	%r13
-	.cfi_def_cfa_offset 8
-	ret
-	.p2align 4,,10
-	.p2align 3
-.L26:
-	.cfi_restore_state
-	leaq	.LC0(%rip), %rdi
+	jmp	.L9
+.L3:
+	leaq	.LC1(%rip), %rdi
 	movq	%r12, %rsi
 	xorl	%eax, %eax
 	call	printf@PLT
 .LEHE2:
 	movl	$1, %edi
 	call	exit@PLT
-.L18:
+.L11:
 	movq	%rax, %rbp
-	jmp	.L16
+	jmp	.L10
 	.globl	__gxx_personality_v0
 	.section	.gcc_except_table,"a",@progbits
 .LLSDA8155:
@@ -175,7 +121,7 @@ main:
 	.uleb128 0
 	.uleb128 .LEHB1-.LFB8155
 	.uleb128 .LEHE1-.LEHB1
-	.uleb128 .L18-.LFB8155
+	.uleb128 .L11-.LFB8155
 	.uleb128 0
 	.uleb128 .LEHB2-.LFB8155
 	.uleb128 .LEHE2-.LEHB2
@@ -191,14 +137,15 @@ main:
 	.type	main.cold, @function
 main.cold:
 .LFSB8155:
-.L16:
+.L10:
 	.cfi_def_cfa_offset 48
-	.cfi_offset 3, -40
-	.cfi_offset 6, -32
-	.cfi_offset 12, -24
-	.cfi_offset 13, -16
+	.cfi_offset 3, -48
+	.cfi_offset 6, -40
+	.cfi_offset 12, -32
+	.cfi_offset 13, -24
+	.cfi_offset 14, -16
 	movq	%rbx, %rdi
-	movl	$24, %esi
+	movl	$280, %esi
 	call	_ZdlPvm@PLT
 	movq	%rbp, %rdi
 .LEHB3:
@@ -213,7 +160,7 @@ main.cold:
 	.byte	0x1
 	.uleb128 .LLSDACSEC8155-.LLSDACSBC8155
 .LLSDACSBC8155:
-	.uleb128 .LEHB3-.LCOLDB1
+	.uleb128 .LEHB3-.LCOLDB2
 	.uleb128 .LEHE3-.LEHB3
 	.uleb128 0
 	.uleb128 0
@@ -223,9 +170,9 @@ main.cold:
 	.size	main, .-main
 	.section	.text.unlikely
 	.size	main.cold, .-main.cold
-.LCOLDE1:
+.LCOLDE2:
 	.section	.text.startup
-.LHOTE1:
+.LHOTE2:
 	.hidden	DW.ref.__gxx_personality_v0
 	.weak	DW.ref.__gxx_personality_v0
 	.section	.data.rel.local.DW.ref.__gxx_personality_v0,"awG",@progbits,DW.ref.__gxx_personality_v0,comdat

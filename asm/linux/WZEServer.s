@@ -34,8 +34,8 @@ _ZN3wze6serverC2Et:
 	movl	%esi, %ebx
 	subq	$8, %rsp
 	.cfi_def_cfa_offset 32
-	movq	$0, (%rdi)
-	movq	$0, 8(%rdi)
+	movq	$0, 256(%rdi)
+	movq	$0, 264(%rdi)
 	movl	$62001, %edi
 .LEHB0:
 	call	SDL_Init@PLT
@@ -47,7 +47,7 @@ _ZN3wze6serverC2Et:
 	jne	.L11
 	movl	%ebx, %edi
 	call	SDLNet_UDP_Open@PLT
-	movq	%rax, 16(%rbp)
+	movq	%rax, 272(%rbp)
 	testq	%rax, %rax
 	je	.L12
 	addq	$8, %rsp
@@ -108,7 +108,7 @@ _ZN3wze6serverC2Et.cold:
 	.cfi_def_cfa_offset 32
 	.cfi_offset 3, -24
 	.cfi_offset 6, -16
-	movq	8(%rbp), %rdi
+	movq	264(%rbp), %rdi
 	call	free@PLT
 	movq	%rbx, %rdi
 .LEHB1:
@@ -157,7 +157,7 @@ _ZN3wze6serverD2Ev:
 	xorl	%ebx, %ebx
 	subq	$8, %rsp
 	.cfi_def_cfa_offset 32
-	movq	(%rdi), %rax
+	movq	256(%rdi), %rax
 	testq	%rax, %rax
 	jne	.L21
 	jmp	.L17
@@ -167,11 +167,11 @@ _ZN3wze6serverD2Ev:
 	movl	$272, %esi
 	addq	$1, %rbx
 	call	_ZdlPvm@PLT
-	movq	0(%rbp), %rax
+	movq	256(%rbp), %rax
 	cmpq	%rax, %rbx
 	jnb	.L17
 .L21:
-	movq	8(%rbp), %rdx
+	movq	264(%rbp), %rdx
 .L14:
 	movq	(%rdx,%rbx,8), %rdi
 	testq	%rdi, %rdi
@@ -180,11 +180,11 @@ _ZN3wze6serverD2Ev:
 	cmpq	%rax, %rbx
 	jb	.L14
 .L17:
-	movq	16(%rbp), %rdi
+	movq	272(%rbp), %rdi
 	call	SDLNet_UDP_Close@PLT
 	call	SDLNet_Quit@PLT
 	call	SDL_Quit@PLT
-	movq	8(%rbp), %rdi
+	movq	264(%rbp), %rdi
 	addq	$8, %rsp
 	.cfi_def_cfa_offset 24
 	popq	%rbx
@@ -224,62 +224,64 @@ _ZN3wze6server4SendENS_7addressEyhPKv:
 	pushq	%r15
 	.cfi_def_cfa_offset 16
 	.cfi_offset 15, -16
+	movq	%rsi, %r15
 	pushq	%r14
 	.cfi_def_cfa_offset 24
 	.cfi_offset 14, -24
-	movq	%rsi, %r14
+	shrq	$32, %r15
 	pushq	%r13
 	.cfi_def_cfa_offset 32
 	.cfi_offset 13, -32
-	shrq	$32, %r14
-	movq	%r8, %r13
+	movq	%rdx, %r13
 	pushq	%r12
 	.cfi_def_cfa_offset 40
 	.cfi_offset 12, -40
-	movq	%rdx, %r12
+	movq	%rsi, %r12
 	pushq	%rbp
 	.cfi_def_cfa_offset 48
 	.cfi_offset 6, -48
-	movq	%rsi, %rbp
 	pushq	%rbx
 	.cfi_def_cfa_offset 56
 	.cfi_offset 3, -56
 	movl	%ecx, %ebx
-	subq	$344, %rsp
-	.cfi_def_cfa_offset 400
+	subq	$72, %rsp
+	.cfi_def_cfa_offset 128
+	movq	%r8, 8(%rsp)
 	movq	%fs:40, %rax
-	movq	%rax, 328(%rsp)
+	movq	%rax, 56(%rsp)
 	xorl	%eax, %eax
 	cmpb	$-16, %cl
 	ja	.L28
-	movq	%rdi, %r15
-	movq	%rsi, 48(%rsp)
-	movb	%cl, 56(%rsp)
+	movq	%rdi, %r14
+	movl	$256, %edi
+	call	_Znwm@PLT
+	movq	%rax, %rbp
 	call	SDL_GetTicks64@PLT
+	movq	%r13, 8(%rbp)
 	movzbl	%bl, %edx
-	leaq	80(%rsp), %rsi
-	movq	%r13, %rdi
-	movq	%rax, 64(%rsp)
-	movq	%r12, 72(%rsp)
+	leaq	16(%rbp), %rsi
+	movq	%rax, 0(%rbp)
+	movq	8(%rsp), %rdi
+	movzbl	%bl, %ebx
 	call	_ZN3neo6memory6CopyToEPKvPvy@PLT
-	movl	48(%rsp), %eax
-	movq	16(%r15), %rdi
-	movq	%rsp, %rdx
+	movq	272(%r14), %rdi
+	leal	16(%rbx), %eax
+	leaq	16(%rsp), %rdx
 	movl	$-1, %esi
-	movl	%eax, 28(%rsp)
-	movzwl	52(%rsp), %eax
-	movw	%ax, 32(%rsp)
-	movzbl	56(%rsp), %eax
-	movl	%eax, 16(%rsp)
-	leaq	64(%rsp), %rax
-	movq	%rax, 8(%rsp)
+	movl	%r12d, 44(%rsp)
+	movw	%r15w, 48(%rsp)
+	movl	%eax, 32(%rsp)
+	movq	%rbp, 24(%rsp)
 	call	SDLNet_UDP_Send@PLT
 	cmpl	$1, %eax
 	jne	.L29
-	movq	328(%rsp), %rax
+	movl	$256, %esi
+	movq	%rbp, %rdi
+	call	_ZdlPvm@PLT
+	movq	56(%rsp), %rax
 	subq	%fs:40, %rax
 	jne	.L30
-	addq	$344, %rsp
+	addq	$72, %rsp
 	.cfi_remember_state
 	.cfi_def_cfa_offset 56
 	xorl	%eax, %eax
@@ -299,48 +301,47 @@ _ZN3wze6server4SendENS_7addressEyhPKv:
 .L28:
 	.cfi_restore_state
 	movzbl	%cl, %ebx
-	movzwl	%r14w, %r14d
+	movzwl	%r15w, %r15d
 	pushq	%r8
-	.cfi_def_cfa_offset 408
+	.cfi_def_cfa_offset 136
 	movzbl	%sil, %edx
 	pushq	%rbx
-	.cfi_def_cfa_offset 416
+	.cfi_def_cfa_offset 144
 	leaq	.LC4(%rip), %rdi
 	movl	%edx, %r9d
 	movl	%edx, %r8d
-	pushq	%r12
-	.cfi_def_cfa_offset 424
+	pushq	%r13
+	.cfi_def_cfa_offset 152
 	movl	%edx, %ecx
 	movl	$240, %esi
-	pushq	%r14
-	.cfi_def_cfa_offset 432
+	pushq	%r15
+	.cfi_def_cfa_offset 160
 	call	printf@PLT
 	addq	$32, %rsp
-	.cfi_def_cfa_offset 400
+	.cfi_def_cfa_offset 128
 	movl	$1, %edi
 	call	exit@PLT
 .L30:
 	call	__stack_chk_fail@PLT
 .L29:
-	movzbl	%bl, %ebx
 	pushq	%rax
-	.cfi_def_cfa_offset 408
-	movzbl	%bpl, %esi
+	.cfi_def_cfa_offset 136
+	movzbl	%r12b, %esi
 	leaq	.LC5(%rip), %rdi
-	pushq	%r13
-	.cfi_def_cfa_offset 416
-	movzwl	%r14w, %r9d
+	movzwl	%r15w, %r9d
+	pushq	16(%rsp)
+	.cfi_def_cfa_offset 144
 	movl	%esi, %r8d
 	movl	%esi, %ecx
-	pushq	%rbx
-	.cfi_def_cfa_offset 424
 	movl	%esi, %edx
+	pushq	%rbx
+	.cfi_def_cfa_offset 152
 	xorl	%eax, %eax
-	pushq	%r12
-	.cfi_def_cfa_offset 432
+	pushq	%r13
+	.cfi_def_cfa_offset 160
 	call	printf@PLT
 	addq	$32, %rsp
-	.cfi_def_cfa_offset 400
+	.cfi_def_cfa_offset 128
 	movl	$1, %edi
 	call	exit@PLT
 	.cfi_endproc
@@ -381,7 +382,7 @@ _ZN3wze6server7ReceiveEv:
 	.cfi_def_cfa_offset 96
 	movq	%fs:40, %rax
 	movq	%rax, 40(%rsp)
-	movq	(%rdi), %rax
+	movq	256(%rdi), %rax
 	testq	%rax, %rax
 	je	.L32
 	xorl	%ebp, %ebp
@@ -392,11 +393,11 @@ _ZN3wze6server7ReceiveEv:
 	movl	$272, %esi
 	addq	$1, %rbp
 	call	_ZdlPvm@PLT
-	movq	(%rbx), %rax
+	movq	256(%rbx), %rax
 	cmpq	%rax, %rbp
 	jnb	.L32
 .L74:
-	movq	8(%rbx), %rdx
+	movq	264(%rbx), %rdx
 .L35:
 	movq	(%rdx,%rbp,8), %rdi
 	testq	%rdi, %rdi
@@ -414,21 +415,21 @@ _ZN3wze6server7ReceiveEv:
 .L40:
 	movl	$272, %edi
 	call	_Znwm@PLT
-	movq	8(%rbx), %rdx
-	cmpq	(%rbx), %rbp
+	movq	264(%rbx), %rdx
+	cmpq	256(%rbx), %rbp
 	jnb	.L76
 	movq	%rax, (%rdx,%rbp,8)
-	movq	16(%rbx), %rdi
-	addq	$16, %rax
 	movq	%r12, %rsi
+	movq	272(%rbx), %rdi
+	addq	$16, %rax
 	movq	%rax, 8(%rsp)
 	leaq	0(,%rbp,8), %r13
 	call	SDLNet_UDP_Recv@PLT
 	cmpl	$1, %eax
 	jne	.L78
 	movl	28(%rsp), %edx
-	movq	8(%rbx), %rax
-	cmpq	(%rbx), %rbp
+	movq	264(%rbx), %rax
+	cmpq	256(%rbx), %rbp
 	jnb	.L76
 	movq	(%rax,%r13), %rax
 	addq	$1, %rbp
@@ -438,20 +439,20 @@ _ZN3wze6server7ReceiveEv:
 	movw	%dx, 4(%rax)
 	leal	-16(%rsi), %edx
 	movb	%dl, 8(%rax)
-	movq	(%rbx), %rax
+	movq	256(%rbx), %rax
 .L53:
 	cmpq	%rax, %rbp
 	jne	.L40
 	leaq	10(%rbp), %r13
-	movq	8(%rbx), %rdi
-	movq	%r13, (%rbx)
+	movq	264(%rbx), %rdi
+	movq	%r13, 256(%rbx)
 	leaq	0(,%r13,8), %rsi
 	call	realloc@PLT
-	movq	%rax, 8(%rbx)
+	movq	%rax, 264(%rbx)
 	movq	%rax, %rdx
 	testq	%rax, %rax
 	je	.L79
-	movq	(%rbx), %rcx
+	movq	256(%rbx), %rcx
 	leaq	-1(%rcx), %rax
 	cmpq	%r13, %rax
 	jb	.L40
@@ -474,8 +475,8 @@ _ZN3wze6server7ReceiveEv:
 	.p2align 4,,10
 	.p2align 3
 .L78:
-	movq	(%rbx), %r12
-	movq	8(%rbx), %rdi
+	movq	256(%rbx), %r12
+	movq	264(%rbx), %rdi
 	cmpq	%r12, %rbp
 	jnb	.L76
 	movq	(%rdi,%r13), %rax
@@ -484,7 +485,7 @@ _ZN3wze6server7ReceiveEv:
 	movl	$272, %esi
 	movq	%rax, %rdi
 	call	_ZdlPvm@PLT
-	movq	(%rbx), %r12
+	movq	256(%rbx), %r12
 	cmpq	%r12, %rbp
 	jb	.L81
 .L55:
@@ -534,16 +535,16 @@ _ZN3wze6server7ReceiveEv:
 	movq	%rcx, (%rdx,%rax,8)
 	jmp	.L40
 .L81:
-	movq	8(%rbx), %rdi
+	movq	264(%rbx), %rdi
 	.p2align 4,,10
 	.p2align 3
 .L49:
-	movq	%rbp, (%rbx)
+	movq	%rbp, 256(%rbx)
 	testq	%rbp, %rbp
 	je	.L83
 	movq	%r13, %rsi
 	call	realloc@PLT
-	movq	%rax, 8(%rbx)
+	movq	%rax, 264(%rbx)
 	testq	%rax, %rax
 	jne	.L55
 	movq	%r12, %rdx
@@ -557,7 +558,7 @@ _ZN3wze6server7ReceiveEv:
 	.p2align 3
 .L83:
 	call	free@PLT
-	movq	$0, 8(%rbx)
+	movq	$0, 264(%rbx)
 	jmp	.L55
 .L76:
 	leaq	.LC7(%rip), %rdi
@@ -594,43 +595,49 @@ _ZN3wze6server11ResolveHostEPKct:
 	pushq	%rbx
 	.cfi_def_cfa_offset 16
 	.cfi_offset 3, -16
-	movl	%esi, %ebx
+	movzwl	%si, %edx
 	subq	$16, %rsp
 	.cfi_def_cfa_offset 32
 	movq	%fs:40, %rax
 	movq	%rax, 8(%rsp)
 	xorl	%eax, %eax
 	testq	%rdi, %rdi
-	je	.L88
+	je	.L90
 	movq	%rsp, %rax
+	movzwl	%si, %ebx
 	movq	%rdi, %rsi
-	xorl	%edx, %edx
-	movl	$0, (%rsp)
 	movq	%rax, %rdi
-	movzwl	%bx, %ebx
 	call	SDLNet_ResolveHost@PLT
-	movl	(%rsp), %eax
+	testl	%eax, %eax
+	je	.L91
+	xorl	%ebx, %ebx
+	xorl	%eax, %eax
+.L86:
 	salq	$32, %rbx
 	orq	%rbx, %rax
 	movq	8(%rsp), %rdx
 	subq	%fs:40, %rdx
-	jne	.L89
+	jne	.L92
 	addq	$16, %rsp
 	.cfi_remember_state
 	.cfi_def_cfa_offset 16
 	popq	%rbx
 	.cfi_def_cfa_offset 8
 	ret
-.L88:
+	.p2align 4,,10
+	.p2align 3
+.L91:
 	.cfi_restore_state
-	movzwl	%si, %edx
+	movl	(%rsp), %eax
+	jmp	.L86
+.L92:
+	call	__stack_chk_fail@PLT
+.L90:
 	leaq	.LC9(%rip), %rdi
 	xorl	%esi, %esi
 	call	printf@PLT
 	movl	$1, %edi
 	call	exit@PLT
-.L89:
-	call	__stack_chk_fail@PLT
 	.cfi_endproc
 .LFE8163:
 	.size	_ZN3wze6server11ResolveHostEPKct, .-_ZN3wze6server11ResolveHostEPKct

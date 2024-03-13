@@ -38,31 +38,37 @@ namespace wze
 
     uint8 server::Send(address Address, uint64 ID, uint8 Size, const void* Data)
     {
-        packet Packet;
         UDPpacket raw;
+        payload* payload;
 
-        if (sizeof(Packet.Payload.Serialized.Data) < Size)
+        if (sizeof(payload::serialized::Data) < Size)
         {
-            printf("wze::server.Send(): Size must not be greater than%ld\nParams: Address: %d.%d.%d.%d:%d, ID: %lld, Size: %d, Data: %p\n", sizeof(Packet.Payload.Serialized.Data), Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.Port, ID, Size, Data); 
+            printf("wze::server.Send(): Size must not be greater than%ld\nParams: Address: %d.%d.%d.%d:%d, ID: %lld, Size: %d, Data: %p\n", sizeof(payload::serialized::Data), Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.Port, ID, Size, Data); 
             exit(1);
         }
 
-        Packet.Address = Address;
-        Packet.Size = Size;
-        Packet.Payload.Serialized.Tick = SDL_GetTicks64();
-        Packet.Payload.Serialized.ID = ID;
-        memory::CopyTo(Data, Packet.Payload.Serialized.Data, Size);
+        if ((payload = new union payload) == NULL)
+        {
+            printf("wze::server.send(): Memory allocation failed\nParams: Address: %d.%d.%d.%d:%d, ID: %lld, Size: %d, Data: %p\n", Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.Port, ID, Size, Data);
+            exit(1);
+        }
+
+        payload->Serialized.Tick = SDL_GetTicks64();
+        payload->Serialized.ID = ID;
+        memory::CopyTo(Data, payload->Serialized.Data, Size);
         
-        raw.address.host = Packet.Address.IPv4.Raw;
-        raw.address.port = Packet.Address.Port;
-        raw.len = Packet.Size;
-        raw.data = Packet.Payload.Raw;
+        raw.address.host = Address.IPv4.Raw;
+        raw.address.port = Address.Port;
+        raw.len = sizeof(payload::serialized::Tick) + sizeof(payload::serialized::ID) + Size;
+        raw.data = payload->Raw;
 
         if (SDLNet_UDP_Send(this->Socket, -1, &raw) != 1)
         {
             printf("wze::server.Send(): SDLNet_UDP_Send() failed\nParams: Address: %d.%d.%d.%d:%d, ID: %lld, Size: %d, Data: %p\n", Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.IPv4.Serialized.A, Address.Port, ID, Size, Data); 
             exit(1);
         }
+
+        delete payload;
 
         return 0;
     }
@@ -86,7 +92,6 @@ namespace wze
             {
                 this->IncomingPackets.Insert(this->IncomingPackets.Length(), 10);
             }
-
             if ((this->IncomingPackets[i] = new packet) == NULL)
             {
                 printf("wze::server.receive(): Memory allocation failed\n");
@@ -102,7 +107,7 @@ namespace wze
 
             this->IncomingPackets[i]->Address.IPv4.Raw = raw.address.host;
             this->IncomingPackets[i]->Address.Port = raw.address.port;
-            this->IncomingPackets[i]->Size = raw.len - (PACKET_SIZE - sizeof(this->IncomingPackets[this->IncomingPackets.Length() - 1]->Payload.Serialized.Data));
+            this->IncomingPackets[i]->Size = raw.len - sizeof(payload::serialized::Tick) - sizeof(payload::serialized::ID);
         
             i++;
         }
@@ -118,7 +123,7 @@ namespace wze
     {
         address result;
 
-        IPaddress address;
+        IPaddress raw;
 
         if (Host == NULL)
         {
@@ -126,12 +131,16 @@ namespace wze
             exit(1);
         }
 
-        address.host = 0;
-
-        SDLNet_ResolveHost(&address, Host, 0);
-
-        result.IPv4.Raw = address.host;
-        result.Port = Port;
+        if (SDLNet_ResolveHost(&raw, Host, Port) == 0)
+        {
+            result.IPv4.Raw = raw.host;
+            result.Port = Port;
+        }
+        else
+        {
+            result.IPv4.Raw = 0;
+            result.Port = 0;
+        }
 
         return result;
     }

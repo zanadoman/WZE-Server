@@ -17,21 +17,12 @@ sint32 main()
 
         for (uint64 i = 0; i < Server->IncomingPackets.Length(); i++)
         {
+            printf("Server: ");
             for (uint8 j = 0; j < Server->IncomingPackets[i]->GetSize(); j++)
             {
                 putchar(((char*)Server->IncomingPackets[i]->GetData())[j]);
             }
             putchar('\n');
-
-            if (Server->IncomingPackets[i]->GetSize() == 4 && ((char*)Server->IncomingPackets[i]->GetData())[0] == 's'
-                                                           && ((char*)Server->IncomingPackets[i]->GetData())[1] == 't'
-                                                           && ((char*)Server->IncomingPackets[i]->GetData())[2] == 'o'
-                                                           && ((char*)Server->IncomingPackets[i]->GetData())[3] == 'p')
-            {
-                delete Server;
-
-                return 0;
-            }
         }
 
         SDL_Delay(3000);

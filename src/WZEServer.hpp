@@ -31,6 +31,17 @@ namespace wze
 
     class server
     {
+        union payload
+        {
+            struct serialized
+            {
+                neo::uint64 Tick;
+                neo::uint64 ID;
+                neo::uint8 Data[PACKET_SIZE - (sizeof(Tick) + sizeof(ID))];
+            } Serialized;
+            neo::uint8 Raw[PACKET_SIZE];
+        } Payload;
+
         class packet
         {
             friend class server;
@@ -43,25 +54,17 @@ namespace wze
             private:
                 address Address;
                 neo::uint8 Size;
-                union
-                {
-                    struct
-                    {
-                        neo::uint64 Tick;
-                        neo::uint64 ID;
-                        neo::uint8 Data[PACKET_SIZE - (sizeof(Tick) + sizeof(ID))];
-                    } Serialized;
-                    neo::uint8 Raw[PACKET_SIZE];
-                } Payload;
+                payload Payload;
         };
 
         public:
-            neo::array<packet*> IncomingPackets;
             server(neo::uint16 Port);
             ~server();
             neo::uint8 Send(address Address, neo::uint64 ID, neo::uint8 Size, const void* Data);
             neo::uint8 Receive();
             static address ResolveHost(const char* Host, neo::uint16 Port);
+
+            neo::array<packet*> IncomingPackets;
 
         private:
             UDPsocket Socket;

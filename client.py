@@ -8,7 +8,7 @@ def main():
     sock.settimeout(0.1)
     while True:
         try:
-            sock.sendto(bytes('\0\0\0\0\0\0\0\0' + '\0\0\0\0\0\0\0\0' + input(), 'utf-8'), (SERVER, PORT))
+            sock.sendto(bytes('\0\0\0\0\0\0\0\0' + '\0\0\0\0\0\0\0\0' + input('Client: '), 'utf-8'), (SERVER, PORT))
         except KeyboardInterrupt:
             exit()
 
