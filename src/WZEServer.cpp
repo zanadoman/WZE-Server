@@ -76,7 +76,7 @@ namespace wze
 
         this->IncomingPackets.Clear();
 
-        raw.maxlen = PACKET_SIZE;
+        raw.maxlen = sizeof(payload::Raw);
         raw.data = packet.Payload.Raw;
 
         while (true)
