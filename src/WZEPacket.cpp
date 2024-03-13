@@ -10,13 +10,6 @@ namespace wze
         {
             return false;
         }
-        for (uint8 i = 0; i < this->Size; i++)
-        {
-            if (this->Payload.Serialized.Data[i] != Packet.Payload.Serialized.Data[i])
-            {
-                return false;
-            }
-        }
 
         return true;
     }

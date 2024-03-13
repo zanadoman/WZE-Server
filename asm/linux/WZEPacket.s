@@ -13,40 +13,20 @@ _ZN3wze6server6packeteqES1_:
 	xorq	8(%rsp), %rax
 	testq	%rcx, %rax
 	jne	.L1
-	movzbl	8(%rdi), %eax
-	cmpb	16(%rsp), %al
-	je	.L11
+	movzbl	16(%rsp), %eax
+	cmpb	%al, 8(%rdi)
+	je	.L6
 .L1:
 	movl	%edx, %eax
 	ret
 	.p2align 4,,10
 	.p2align 3
-.L11:
-	movq	32(%rsp), %rcx
-	cmpq	%rcx, 24(%rdi)
-	jne	.L1
-	testb	%al, %al
-	je	.L7
-	leaq	32(%rax), %rdx
-	movl	$32, %eax
-	jmp	.L3
-	.p2align 4,,10
-	.p2align 3
-.L12:
-	addq	$1, %rax
-	cmpq	%rdx, %rax
-	je	.L7
-.L3:
-	movzbl	8(%rsp,%rax), %esi
-	cmpb	%sil, (%rdi,%rax)
-	je	.L12
-	xorl	%edx, %edx
-	jmp	.L1
-	.p2align 4,,10
-	.p2align 3
-.L7:
-	movl	$1, %edx
-	jmp	.L1
+.L6:
+	movq	32(%rsp), %rax
+	cmpq	%rax, 24(%rdi)
+	sete	%dl
+	movl	%edx, %eax
+	ret
 	.cfi_endproc
 .LFE8155:
 	.size	_ZN3wze6server6packeteqES1_, .-_ZN3wze6server6packeteqES1_

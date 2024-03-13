@@ -414,9 +414,9 @@ _ZN3wze6server7ReceiveEv:
 	cmpq	256(%r15), %rbp
 	jnb	.L40
 	addq	%rbx, %rax
-	movq	64(%rsp), %rdx
-	cmpq	%rdx, 16(%rax)
-	jnb	.L31
+	movq	16(%rax), %rdx
+	cmpq	%rdx, 64(%rsp)
+	jb	.L31
 	movq	%rax, %rdi
 	movl	$34, %ecx
 	movq	%r12, %rsi

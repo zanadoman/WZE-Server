@@ -94,7 +94,7 @@ namespace wze
             {
                 if (this->IncomingPackets[i] == packet)
                 {
-                    if (this->IncomingPackets[i].Payload.Serialized.Tick < packet.Payload.Serialized.Tick)
+                    if (this->IncomingPackets[i].Payload.Serialized.Tick <= packet.Payload.Serialized.Tick)
                     {
                         this->IncomingPackets[i] = packet;
                     }
